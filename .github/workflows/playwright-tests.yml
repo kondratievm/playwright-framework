@@ -13,33 +13,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Шаг 1: Checkout кода
+      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Шаг 2: Установка Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '18' # Рекомендуется Node.js 18 или выше
-          cache: 'npm'
+          node-version: 18
 
-      # Шаг 3: Установка зависимостей
+      # Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      # Шаг 4: Установка Playwright
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+      # Start the server
+      - name: Start the server
+        run: npm run start &
+        env:
+          NODE_ENV: test
 
-      # Шаг 5: Запуск тестов
+      # Wait for the server to be ready
+      - name: Wait for the server
+        run: npx wait-on http://localhost:3000
+
+      # Run Playwright tests
       - name: Run Playwright tests
         run: npx playwright test
-
-      # Шаг 6: Сохранение отчетов
-      - name: Upload test artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: playwright-report/
