@@ -1,0 +1,4 @@
+[LOG]: Fill username
+[LOG]: Fill password.
+[LOG]: Click login button.
+https://demo.applitools.com/app.html
