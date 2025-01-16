@@ -1,0 +1,45 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Шаг 1: Checkout кода
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Шаг 2: Установка Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Рекомендуется Node.js 18 или выше
+          cache: 'npm'
+
+      # Шаг 3: Установка зависимостей
+      - name: Install dependencies
+        run: npm install
+
+      # Шаг 4: Установка Playwright
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      # Шаг 5: Запуск тестов
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      # Шаг 6: Сохранение отчетов
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: playwright-report/
